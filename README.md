@@ -2,7 +2,7 @@
 
 ## About Andrew Sheerin
 
-![Banner Image](/images/me.jpg?raw=True)
+![Banner Image](/images/me.jpg?raw=True =100x20)
 
 I am a Master's student in the Civil and Environmental Engineering Department. 
 
