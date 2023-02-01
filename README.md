@@ -1,4 +1,4 @@
-# Hello World! Andrew Sheerin's Introduction
+## Andrew Sheerin's Introduction
 
 <p align="center" width="100%">
     <img width="33%" src="/images/me.jpg?raw=True">
