@@ -2,7 +2,9 @@
 
 ## About Andrew Sheerin
 
-![minipic](/images/me.jpg?raw=True)
+<p align="center" width="100%">
+    <img width="20%" src="/images/me.jpg?raw=True">
+</p>
 
 I am a Master's student in the Civil and Environmental Engineering Department. 
 I am working on a research project, under Dr. Craver, that is part of the Water for the World lab.
