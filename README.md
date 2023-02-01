@@ -1,6 +1,4 @@
-# Hello World! 
-
-## I'm Andrew Sheerin
+# Hello World! Andrew Sheerin's Introduction
 
 <p align="center" width="100%">
     <img width="33%" src="/images/me.jpg?raw=True">
@@ -19,6 +17,8 @@ Before I came to URI, I obtained a B.S. in Systems Engineering and Sustainabilit
 
 
 ## My Interests
-   
+I have lived in Newport, Rhode Island my entire life (except for my 4 years at GW). I learned to sail at an early age and never stopped. I would consider sailing my biggest passion, as I have been racing competitively for the past 15 years at the regional, national, and even international level. I sailed for GW while I was in college. I have also coached sailing for the past 8 years, and am currently assistant coaching for the URI sailing team. As much as I love sailing, I understand the importance of balancing in other activities. I also enjoy to ski, road bike, mountain bike, and play golf. I like to keep the mind active by playing chess and completing riddle-like games. And I couldn't go without mentioning my dog, Mack, who I love to play and go on adventures with. 
 
-
+<p align="center" width="100%">
+    <img width="33%" src="/images/mack.jpg?raw=True">
+</p>
