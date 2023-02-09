@@ -1,7 +1,7 @@
 ## Andrew Sheerin's Introduction
 
 <p align="center" width="100%">
-    <img width="33%" src="/images/me.jpg?raw=True">
+    <img width="33%" src="/Coding Challenges/CC_1/images/me.jpg?raw=True">
 </p>
 
 ## My Studies
