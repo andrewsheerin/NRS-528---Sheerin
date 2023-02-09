@@ -1,3 +1,3 @@
-## This is the repository for NRS 528 - GIS and Python
+## Andrew Sheerin's repository for NRS 528 - GIS and Python
 
-## Homework assignments are in the coding challenges directory
+### Homework assignments are in the coding challenges directory
