@@ -1,4 +1,4 @@
-# Coding Challenge 2 - Part 5
+# Coding Challenge 2.py - Part 5
 
 letter_scores = {
     "aeioulnrst": 1,

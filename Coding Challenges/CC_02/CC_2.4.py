@@ -1,4 +1,4 @@
-# Coding Challenge 2 - Part 4
+# Coding Challenge 2.py - Part 4
 
 age = input("What is your age? ")
 years_until_retirement = 65 - int(age)

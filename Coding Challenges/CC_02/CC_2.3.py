@@ -1,4 +1,4 @@
-# Coding Challenge 2 - Part 3
+# Coding Challenge 2.py - Part 3
 
 # Task 1
 string = 'hi dee hi how are you mr dee'

@@ -1,4 +1,4 @@
-# Coding Challenge 2 - Part 2
+# Coding Challenge 2.py - Part 2
 
 list_a = ['dog', 'cat', 'rabbit', 'hamster', 'gerbil']
 list_b = ['dog', 'hamster', 'snake']
