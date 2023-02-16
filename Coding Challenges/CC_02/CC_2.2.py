@@ -17,4 +17,8 @@ for i in list_a:
     if i not in list_b:
         not_same.append(i)
 
+for i in list_b:
+    if i not in list_a:
+        not_same.append(i)
+
 print('Items that do not overlap are: ', not_same)
