@@ -1,5 +1,5 @@
 ########################
-# The following script builds on my Coding Challenge 4 assignment, in which metrics that summarize the area around a
+# The following script builds on my Coding Challenge 4.py assignment, in which metrics that summarize the area around a
 # road are calculated. The results of this work will assist a research project to develop an enhanced street sweeping
 # program, which will optimize the location and frequency of street sweeping. The following metrics are calculated as
 # percentage of area within a buffer zone around each road segment:
