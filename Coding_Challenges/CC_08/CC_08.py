@@ -359,17 +359,20 @@ def road_prioritization_tool(town):         #### RUN FUNCTION STARTING ON LINE 3
 
     print("...All Done. Output Feature Class Length: " + str(len(table_to_data_frame(os.path.join(output,'Final_Roads_' + town2 +'.shp')))))
 
-# study_area = ['CUMBERLAND', 'WOONSOCKET', 'NORTH SMITHFIELD', 'BURRILLVILLE', 'GLOCESTER',
-#               'PAWTUCKET', 'NORTH PROVIDENCE', 'PROVIDENCE', 'EAST PROVIDENCE',
-#               'FOSTER', 'WARWICK', 'WARREN', 'WEST WARWICK', 'COVENTRY', 'BRISTOL',
-#               'TIVERTON', 'PORTSMOUTH', 'EAST GREENWICH', 'WEST GREENWICH', 'NORTH KINGSTOWN', 'EXETER', 'JAMESTOWN',
-#               'RICHMOND', 'LITTLE COMPTON', 'MIDDLETOWN', 'HOPKINTON', 'SOUTH KINGSTOWN', 'NEWPORT', 'NARRAGANSETT',
-#               'CHARLESTOWN', 'WESTERLY', 'NEW SHOREHAM', 'LINCOLN', 'SMITHFIELD', 'CENTRAL FALLS',
-#               'JOHNSTON', 'SCITUATE', 'CRANSTON', 'BARRINGTON']
+study_area = ['CUMBERLAND', 'WOONSOCKET', 'NORTH SMITHFIELD', 'BURRILLVILLE', 'GLOCESTER',
+              'PAWTUCKET', 'NORTH PROVIDENCE', 'PROVIDENCE', 'EAST PROVIDENCE',
+              'FOSTER', 'WARWICK', 'WARREN', 'WEST WARWICK', 'COVENTRY', 'BRISTOL',
+              'TIVERTON', 'PORTSMOUTH', 'EAST GREENWICH', 'WEST GREENWICH', 'NORTH KINGSTOWN', 'EXETER', 'JAMESTOWN',
+              'RICHMOND', 'LITTLE COMPTON', 'MIDDLETOWN', 'HOPKINTON', 'SOUTH KINGSTOWN', 'NEWPORT', 'NARRAGANSETT',
+              'CHARLESTOWN', 'WESTERLY', 'NEW SHOREHAM', 'LINCOLN', 'SMITHFIELD', 'CENTRAL FALLS',
+              'JOHNSTON', 'SCITUATE', 'CRANSTON', 'BARRINGTON']
 
 ##### Uncomment 1 line to run road prioritization tool --- only works for one town at a time for some reason... not sure why
 
-road_prioritization_tool("CUMBERLAND")
+for i in study_area:
+    road_prioritization_tool(i)
+
+
 # road_prioritization_tool("WOONSOCKET")
 # road_prioritization_tool("NORTH SMITHFIELD")
 # road_prioritization_tool("BURRILLVILLE")
