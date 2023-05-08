@@ -17,13 +17,13 @@ class Toolbox(object):
         self.alias = "Pollution Accumulation and Street Sweeping Tool"
 
         # List of tool classes associated with this toolbox
-        self.tools = [PASST]
+        self.tools = [LandUse, PASST]
 
 
-class PASST(object):
+class LandUse(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Pollution Accumulation and Street Sweeping Tool"
+        self.label = "Land Use Calculator"
         self.description = ""
         self.canRunInBackground = False
 
@@ -33,30 +33,27 @@ class PASST(object):
         # Code for parameters function
         params = []
         input_roads = arcpy.Parameter(name="input_roads",
-                                      displayName="Input Roads",
+                                      displayName="Input Roads Feature Class",
                                       datatype="DEFeatureClass",
                                       parameterType="Required",  # Required|Optional|Derived
                                       direction="Input",  # Input|Output
                                       )
-        input_roads.value = "INPUT_DATA/Roads_final.shp"
         params.append(input_roads)
 
         land_use = arcpy.Parameter(name="land_use",
-                                   displayName="Land Use",
+                                   displayName="Land Use Feature Class",
                                    datatype="DEFeatureClass",
                                    parameterType="Required",  # Required|Optional|Derived
                                    direction="Input",  # Input|Output
                                    )
-        land_use.values = "INPUT_DATA/LULC_RISPft.shp"
         params.append(land_use)
 
         output_roads = arcpy.Parameter(name="output_roads",
-                                       displayName="Output Roads",
+                                       displayName="Output Roads Feature Class",
                                        datatype="DEFeatureClass",
                                        parameterType="Required",  # Required|Optional|Derived
                                        direction="Output",  # Input|Output
                                        )
-        output_roads.value = "Output_roads.shp"
         params.append(output_roads)
 
         buffer_dist = arcpy.Parameter(name="buffer_dist",
@@ -67,69 +64,6 @@ class PASST(object):
                                       )
         buffer_dist.value = 250
         params.append(buffer_dist)
-
-        days = arcpy.Parameter(name="days",
-                               displayName="Days in Simulation (1 - 365)",
-                               datatype="GPLong",
-                               parameterType="Required",
-                               direction="Input",  # Input|Output
-                               )
-        days.value = 365
-        params.append(days)
-
-        slope_threshold = arcpy.Parameter(name="slope_threshold",
-                                          displayName="Slope Threshold for Sweeping Events (0.03 - 1)",
-                                          datatype="GPDouble",
-                                          parameterType="Required",
-                                          direction="Input",  # Input|Output
-                                          )
-        slope_threshold.value = 0.1
-        params.append(slope_threshold)
-
-        QFACT1 = arcpy.Parameter(name="QFACT1",
-                                 displayName="Buildup Limit (pounds)",
-                                 datatype="GPLong",
-                                 parameterType="Required",
-                                 direction="Input",  # Input|Output
-                                 )
-        QFACT1.value = 100
-        params.append(QFACT1)
-
-        QFACT3_res = arcpy.Parameter(name="QFACT3_res",
-                                     displayName="Days to Reach Buildup Limit (Residential)",
-                                     datatype="GPLong",
-                                     parameterType="Required",
-                                     direction="Input",  # Input|Output
-                                     )
-        QFACT3_res.value = 7
-        params.append(QFACT3_res)
-
-        QFACT3_com = arcpy.Parameter(name="QFACT3_com",
-                                     displayName="Days to Reach Buildup Limit (Commercial)",
-                                     datatype="GPLong",
-                                     parameterType="Required",
-                                     direction="Input",  # Input|Output
-                                     )
-        QFACT3_com.value = 4
-        params.append(QFACT3_com)
-
-        QFACT3_for = arcpy.Parameter(name="QFACT3_for",
-                                     displayName="Days to Reach Buildup Limit (Forest)",
-                                     datatype="GPLong",
-                                     parameterType="Required",
-                                     direction="Input",  # Input|Output
-                                     )
-        QFACT3_for.value = 10
-        params.append(QFACT3_for)
-
-        REM_EFF = arcpy.Parameter(name="REM_EFF",
-                                  displayName="Street Sweeper Removal Efficiency (0-1)(float)",
-                                  datatype="GPDouble",
-                                  parameterType="Required",
-                                  direction="Input",  # Input|Output
-                                  )
-        REM_EFF.value = 0.85
-        params.append(REM_EFF)
 
         return params
 
@@ -154,28 +88,6 @@ class PASST(object):
         land_use = parameters[1].valueAsText
         output_roads = parameters[2].valueAsText
         buffer_dist = parameters[3].valueAsText
-        days = parameters[4].value
-        slope_threshold = parameters[5].value
-        QFACT1 = parameters[6].value
-        QFACT3_res = parameters[7].value
-        QFACT3_com = parameters[8].value
-        QFACT3_for = parameters[9].value
-        REM_EFF = parameters[10].value
-
-        # Set time period
-        start = datetime(2022, 1, 1)
-        end = datetime(2022, 12, 31)
-
-        point = meteostat.Point(lat=41.7260, lon=-71.4304)
-        data = meteostat.Daily(point, start, end)
-        rainfall = data.fetch()
-        rain = rainfall['prcp'].to_list()
-
-        rain_in = []
-        for day in rain:
-            day = day * 0.03937008
-            day = round(day, 2)
-            rain_in.append(day)
 
         # Copy Features into Output Feature Class
         arcpy.management.CopyFeatures(input_roads, output_roads)
@@ -242,8 +154,159 @@ class PASST(object):
                 row[2] = for_values.pop(0)
                 cursor.updateRow(row)
 
+        arcpy.AddMessage(
+            'All Done! Now go run the Pollution Accumulation and Street Sweeping Tool using your output feature class.')
+
+
+##############################
+
+class PASST(object):
+    def __init__(self):
+        """Define the tool (tool name is the name of the class)."""
+        self.label = "Pollution Accumulation and Street Sweeping Tool"
+        self.description = ""
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        """Define parameter definitions"""
+
+        # Code for parameters function
+        params = []
+        input_roads = arcpy.Parameter(name="input_roads",
+                                      displayName="Input Roads Feature Class",
+                                      datatype="DEFeatureClass",
+                                      parameterType="Required",  # Required|Optional|Derived
+                                      direction="Input",  # Input|Output
+                                      )
+        params.append(input_roads)
+
+        slope_threshold = arcpy.Parameter(name="slope_threshold",
+                                          displayName="Slope Threshold for Sweeping Events (0.03 - 1)",
+                                          datatype="GPDouble",
+                                          parameterType="Required",
+                                          direction="Input",  # Input|Output
+                                          )
+        slope_threshold.value = 0.1
+        params.append(slope_threshold)
+
+        QFACT1 = arcpy.Parameter(name="QFACT1",
+                                 displayName="Buildup Limit (pounds)",
+                                 datatype="GPLong",
+                                 parameterType="Required",
+                                 direction="Input",  # Input|Output
+                                 )
+        QFACT1.value = 100
+        params.append(QFACT1)
+
+        QFACT3_res = arcpy.Parameter(name="QFACT3_res",
+                                     displayName="Days to Reach Buildup Limit (Residential)",
+                                     datatype="GPLong",
+                                     parameterType="Required",
+                                     direction="Input",  # Input|Output
+                                     )
+        QFACT3_res.value = 7
+        params.append(QFACT3_res)
+
+        QFACT3_com = arcpy.Parameter(name="QFACT3_com",
+                                     displayName="Days to Reach Buildup Limit (Commercial)",
+                                     datatype="GPLong",
+                                     parameterType="Required",
+                                     direction="Input",  # Input|Output
+                                     )
+        QFACT3_com.value = 4
+        params.append(QFACT3_com)
+
+        QFACT3_for = arcpy.Parameter(name="QFACT3_for",
+                                     displayName="Days to Reach Buildup Limit (Forest)",
+                                     datatype="GPLong",
+                                     parameterType="Required",
+                                     direction="Input",  # Input|Output
+                                     )
+        QFACT3_for.value = 10
+        params.append(QFACT3_for)
+
+        REM_EFF = arcpy.Parameter(name="REM_EFF",
+                                  displayName="Street Sweeper Removal Efficiency (0-1)",
+                                  datatype="GPDouble",
+                                  parameterType="Required",
+                                  direction="Input",  # Input|Output
+                                  )
+        REM_EFF.value = 0.85
+        params.append(REM_EFF)
+
+        start_date = arcpy.Parameter(name="start_date",
+                                     displayName="Simulation Start Date (M/D/YYYY)",
+                                     datatype="GPDate",
+                                     parameterType="Required",
+                                     direction="Input",  # Input|Output
+                                     )
+        params.append(start_date)
+
+        end_date = arcpy.Parameter(name="end_date",
+                                   displayName="Simulation End Date (M/D/YYYY)",
+                                   datatype="GPDate",
+                                   parameterType="Required",
+                                   direction="Input",  # Input|Output
+                                   )
+        params.append(end_date)
+
+        return params
+
+    def isLicensed(self):
+        """Set whether tool is licensed to execute."""
+        return True
+
+    def updateParameters(self, parameters):
+        """Modify the values and properties of parameters before internal
+        validation is performed.  This method is called whenever a parameter
+        has been changed."""
+        return
+
+    def updateMessages(self, parameters):
+        """Modify the messages created by internal validation for each tool
+        parameter.  This method is called after internal validation."""
+        return
+
+    def execute(self, parameters, messages):
+        """The source code of the tool."""
+        input_roads = parameters[0].valueAsText
+        slope_threshold = parameters[1].value
+        QFACT1 = parameters[2].value
+        QFACT3_res = parameters[3].value
+        QFACT3_com = parameters[4].value
+        QFACT3_for = parameters[5].value
+        REM_EFF = parameters[6].value
+        start_date = parameters[7].valueAsText
+        end_date = parameters[8].valueAsText
+
+        start_date_y = int(start_date.split("/")[2])
+        start_date_m = int(start_date.split("/")[0])
+        start_date_d = int(start_date.split("/")[1])
+
+        end_date_y = int(end_date.split("/")[2])
+        end_date_m = int(end_date.split("/")[0])
+        end_date_d = int(end_date.split("/")[1])
+
+        # Set time period
+        start = datetime(start_date_y, start_date_m, start_date_d)
+        end = datetime(end_date_y, end_date_m, end_date_d)
+
+        point = meteostat.Point(lat=41.7260, lon=-71.4304)
+        data = meteostat.Daily(point, start, end)
+        rainfall = data.fetch()
+        rain = rainfall['prcp'].to_list()
+
+        # Get length of simulation (days)
+        days = len(rain)
+
+        rain_in = []
+        for day in rain:
+            day = day * 0.03937008
+            day = round(day, 2)
+            rain_in.append(day)
+
         # Search cursor to extract FID, Road Name, and Road Length
-        fldLst = arcpy.ListFields(output_roads)
+        fldLst = arcpy.ListFields(input_roads)
         fldLst2 = []
         for fld in fldLst:
             fldLst2.append(fld.baseName)
@@ -251,7 +314,7 @@ class PASST(object):
 
         fields = [ID, "Road_Name", "Shape_Leng", "PCT_RES", "PCT_COM", "PCT_FOR"]  # specify fields to retrieve
         road_dict = {ID: [], 'Road_Name': [], 'Length': [], 'PCT_RES': [], 'PCT_COM': [], 'PCT_FOR': []}
-        with arcpy.da.SearchCursor(output_roads, fields) as cursor:
+        with arcpy.da.SearchCursor(input_roads, fields) as cursor:
             for row in cursor:
                 fid = row[0]  # get the value of the FID field
                 name = row[1]  # get road name value
@@ -264,7 +327,6 @@ class PASST(object):
                 road_dict['PCT_COM'].append(row[4])
                 road_dict['PCT_FOR'].append(row[5])
 
-        land_use_list = []  # Track Dominant land use
         all_sum_washoff_0 = []  # Track total washoff pollution from scenario 0
         all_sum_swept_1 = []  # Track total swept pollution from scenario 1
         all_sweep_events_1 = []  # Track number of sweeping events from scenario 1
@@ -285,19 +347,12 @@ class PASST(object):
             # Set QFACT3 = Days to reach buildup limit, dependent on dominant land use
             # QFACT3 = 4 if commercial, 7 if residential, and 10 if forested
             # The lower the QFACT3, the quicker pollution accumulates
-            arcpy.management.AddField(output_roads, 'LandUse', 'TEXT', '', '', '', 'Dominant Land Use')
-            if road_dict['PCT_RES'][i] >= road_dict['PCT_COM'][i] and road_dict['PCT_RES'][i] >= road_dict['PCT_FOR'][
-                i]:
+            if road_dict['PCT_RES'][i] >= road_dict['PCT_COM'][i] and road_dict['PCT_RES'][i] >= road_dict['PCT_FOR'][i]:
                 QFACT3 = QFACT3_res
-                land_use_list.append('Residential')
-            elif road_dict['PCT_COM'][i] >= road_dict['PCT_RES'][i] and road_dict['PCT_COM'][i] >= road_dict['PCT_FOR'][
-                i]:
+            elif road_dict['PCT_COM'][i] >= road_dict['PCT_RES'][i] and road_dict['PCT_COM'][i] >= road_dict['PCT_FOR'][i]:
                 QFACT3 = QFACT3_com
-                land_use_list.append('Commercial')
-            elif road_dict['PCT_FOR'][i] >= road_dict['PCT_RES'][i] and road_dict['PCT_FOR'][i] >= road_dict['PCT_COM'][
-                i]:
+            elif road_dict['PCT_FOR'][i] >= road_dict['PCT_RES'][i] and road_dict['PCT_FOR'][i] >= road_dict['PCT_COM'][i]:
                 QFACT3 = QFACT3_for
-                land_use_list.append('Forest')
 
             # Pollution tracking variables
             Poll_0 = []  # Track Pollution with rain - Scenario 0 (no sweeping)
@@ -399,18 +454,21 @@ class PASST(object):
                 d1_list.append(d1)
                 slope1_list.append(slope1)
 
-                df_0 = pd.DataFrame(columns=['Poll_0', 'Poll_Washoff0', 'D0'])
-                df_1 = pd.DataFrame(columns=['Poll_1', 'Poll_Swept1', 'Poll_Washoff1', 'Slope1', 'D1'])
+                # Populate Dataframes
+                df_Scenario0 = pd.DataFrame(columns=['Poll_0', 'Poll_Washoff0', 'D0'])
+                df_Scenario1 = pd.DataFrame(columns=['Poll_1', 'Poll_Swept1', 'Poll_Washoff1', 'Slope1', 'D1'])
 
-                df_0['Poll_0'] = Poll_0
-                df_0['Poll_Washoff0'] = Poll_washoff0
-                df_0['D0'] = d0_list
+                df_Scenario0['Poll_0'] = Poll_0
+                df_Scenario0['Poll_Washoff0'] = Poll_washoff0
+                df_Scenario0['D0'] = d0_list
+                df_Scenario1['Poll_1'] = Poll_1
+                df_Scenario1['Poll_Swept1'] = Poll_swept1
+                df_Scenario1['Poll_Washoff1'] = Poll_washoff1
+                df_Scenario1['Slope1'] = slope1_list
+                df_Scenario1['D1'] = d1_list
 
-                df_1['Poll_1'] = Poll_1
-                df_1['Poll_Swept1'] = Poll_swept1
-                df_1['Poll_Washoff1'] = Poll_washoff1
-                df_1['Slope1'] = slope1_list
-                df_1['D1'] = d1_list
+                df_Scenario0.to_csv('Scenario0_table.csv')
+                df_Scenario1.to_csv('Scenario1_table.csv')
 
             #### Calculate Metrics
 
@@ -456,46 +514,44 @@ class PASST(object):
 
             # Plot results in subplots
             ax[i].plot(Poll_1, label='Accumulation', color='GREEN')
-            ax[i].bar(df_1.index, Poll_swept1, label='Swept Pollution', color='RED')
-            ax[i].bar(df_1.index, Poll_washoff1, label='Washed off Pollution', color='BLUE')
+            ax[i].bar(df_Scenario1.index, Poll_swept1, label='Swept Pollution', color='RED')
+            ax[i].bar(df_Scenario1.index, Poll_washoff1, label='Washed off Pollution', color='BLUE')
             ax[i].set_title(name)
 
         ax[i].legend(loc='lower center', bbox_to_anchor=(0.5, -1), ncol=3)
         ax[i].set_xlabel('Days')
         # Save Plot
         plt.subplots_adjust(top=0.85, hspace=0.4)
-        plt.savefig('PollutionTracker_plot2.tif', dpi=300)
+        plt.savefig('PASST_plot.png', dpi=300)
         plt.close()
 
         # Add the fields to the feature class
-        arcpy.AddField_management(output_roads, 'LandUse', "TEXT")
-        arcpy.AddField_management(output_roads, 'P_WOff_0', "FLOAT")
-        arcpy.AddField_management(output_roads, 'P_WOff_1', "FLOAT")
-        arcpy.AddField_management(output_roads, 'P_Swept_1', "FLOAT")
-        arcpy.AddField_management(output_roads, 'Sw_Events', "FLOAT")
-        arcpy.AddField_management(output_roads, 'WOff_Diff', "FLOAT")
+        arcpy.AddField_management(input_roads, 'LandUse', "TEXT")
+        arcpy.AddField_management(input_roads, 'P_WOff_0', "FLOAT")
+        arcpy.AddField_management(input_roads, 'P_WOff_1', "FLOAT")
+        arcpy.AddField_management(input_roads, 'P_Swept_1', "FLOAT")
+        arcpy.AddField_management(input_roads, 'Sw_Events', "FLOAT")
+        arcpy.AddField_management(input_roads, 'WOff_Diff', "FLOAT")
 
-        fields = ['LandUse', 'P_WOff_0', 'P_WOff_1', 'P_Swept_1', 'Sw_Events', 'WOff_Diff']
-        with arcpy.da.UpdateCursor(output_roads, fields) as cursor:
+        fields = ['P_WOff_0', 'P_WOff_1', 'P_Swept_1', 'Sw_Events', 'WOff_Diff']
+        with arcpy.da.UpdateCursor(input_roads, fields) as cursor:
             for row in cursor:
-                row[0] = land_use_list.pop(0)
-                row[1] = all_sum_washoff_0.pop(0)
-                row[2] = all_sum_washoff_1.pop(0)
-                row[3] = all_sum_swept_1.pop(0)
-                row[4] = all_sweep_events_1.pop(0)
-                row[5] = all_pct_diff.pop(0)
+                row[0] = all_sum_washoff_0.pop(0)
+                row[1] = all_sum_washoff_1.pop(0)
+                row[2] = all_sum_swept_1.pop(0)
+                row[3] = all_sweep_events_1.pop(0)
+                row[4] = all_pct_diff.pop(0)
 
                 cursor.updateRow(row)
 
         return
 
-
 # This code block allows you to run your code in a test-mode within PyCharm, i.e. you do not have to open the tool in
 # ArcMap. This works best for a "single tool" within the Toolbox.
-def main():
-    tool = PASST()  # i.e. what you have called your tool class: class Clippy(object):
-    tool.execute(tool.getParameterInfo(), None)
-
-
-if __name__ == '__main__':
-    main()
+# def main():
+#     tool = PASST()  # i.e. what you have called your tool class: class Clippy(object):
+#     tool.execute(tool.getParameterInfo(), None)
+#
+#
+# if __name__ == '__main__':
+#     main()
