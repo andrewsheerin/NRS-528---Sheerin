@@ -2,6 +2,13 @@
 
 ### This ArcGIS toolbox tracks pollution accumulation, street sweeping events, and pollutant washoff due to rainfall across a series of roads. The toolbox includes two tools that shall be used in succession. 
 
+#### To implement this toolbox, the following python packages are needed: arcpy, matplotlib, pandas, datetime, math, and meteostat. These packages are likely included in your ArcGIS Pro environment, with the exception of meteostat. Please follow these steps in order to install meteostat:
+1. Check your ArcGIS active environment by opening ArcGIS Pro. In the top menu bar go to 'Project'. On the left panel go to 'Package Manager'. Search for meteostat. If meteostat is not there, continue to step 2.
+2. Clone your active ArcGIS environment to allow you to add a new package. In the top right, select the settings icon next to the 'Active Environment' drop down menu. Click the three dots icon next to your active environment and select 'Clone'. Name the new ArcGIS Environment something other than 'arcgispro-py3'. Remember the name of the new environment.
+3. Once the new environment is finished cloning, you can select it as your active environment by using the drop down menu in the top right. Restart ArcGIS to activate the environment.
+4. Once your new environment is active, you can install the package. Open the 'Python Command Prompt' application. Your new ArcGIS environment should appear in the first line of the command prompt. Install meteostat using pip - 'pip install meteostat'
+5. Ensure it worked by testing it using python. Type 'python' and hit enter. On the new line type 'import meteostat'. If there are no errors, then your are all set and you can continue using the toolbox.
+
 #### The first tool is called 'Land Use Calculator' and requires two input files: a roads feature class and land use feature class. An output feature class is created that includes the percentage of residential, commercial, and forested land use within the area surrounding the roads. Additionally, the user can define the buffer distance, which is the amount of area surrounding the roads used to calculate the land use percentages. A default of 250 feet is used.
 
 #### The second tool is called 'Pollutant Accumulation and Street Sweeping Tool' or PASST and requires one input file, which should be the output feature class of the 'Land Use Calculator Tool' This tool tracks the pollutant accumulation, street sweeping events, and pollutant washoff due to rainfall across the roads. The following tool parameters have supplied recommended values, however can be adjusted.
