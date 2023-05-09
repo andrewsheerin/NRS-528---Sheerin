@@ -6,6 +6,7 @@ import pandas as pd
 import meteostat
 from datetime import datetime
 import math
+import os
 
 arcpy.env.overwriteOutput = True
 
@@ -250,6 +251,14 @@ class PASST(object):
                                    )
         params.append(end_date)
 
+        output_folder = arcpy.Parameter(name='output_folder',
+                                        displayName='Output Folder Path',
+                                        datatype='DEFolder',
+                                        parameterType='Required',
+                                        direction='Input'
+                                        )
+        params.append(output_folder)
+
         return params
 
     def isLicensed(self):
@@ -278,6 +287,7 @@ class PASST(object):
         REM_EFF = parameters[6].value
         start_date = parameters[7].valueAsText
         end_date = parameters[8].valueAsText
+        output_folder = parameters[9].valueAsText
 
         start_date_y = int(start_date.split("/")[2])
         start_date_m = int(start_date.split("/")[0])
@@ -467,8 +477,8 @@ class PASST(object):
                 df_Scenario1['Slope1'] = slope1_list
                 df_Scenario1['D1'] = d1_list
 
-                df_Scenario0.to_csv('Scenario0_table.csv')
-                df_Scenario1.to_csv('Scenario1_table.csv')
+                df_Scenario0.to_csv(os.path.join(output_folder, 'Scenario0_table.csv'))
+                df_Scenario1.to_csv(os.path.join(output_folder, 'Scenario1_table.csv'))
 
             #### Calculate Metrics
 
@@ -522,7 +532,7 @@ class PASST(object):
         ax[i].set_xlabel('Days')
         # Save Plot
         plt.subplots_adjust(top=0.85, hspace=0.4)
-        plt.savefig('PASST_plot.png', dpi=300)
+        plt.savefig(os.path.join(output_folder, 'PASST_plot.png'), dpi=300)
         plt.close()
 
         # Add the fields to the feature class
@@ -543,6 +553,8 @@ class PASST(object):
                 row[4] = all_pct_diff.pop(0)
 
                 cursor.updateRow(row)
+
+        arcpy.management.CopyFeatures(input_roads, os.path.join(output_folder, "output_roads.shp"))
 
         return
 
